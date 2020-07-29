@@ -988,6 +988,7 @@ shakaAssets.testAssets = [
       .addFeature(shakaAssets.Feature.HIGH_DEFINITION)
       .addLicenseServer('com.microsoft.playready', 'https://content.uplynk.com/pr')
       .addLicenseServer('com.widevine.alpha', 'https://content.uplynk.com/wv')
+      .setPersistentStateRequired('com.microsoft.playready', true)
       .setRequestFilter(shakaAssets.UplynkRequestFilter)
       .setResponseFilter(shakaAssets.UplynkResponseFilter),
   // Reliable Playready playback requires Edge 16+
@@ -1005,6 +1006,7 @@ shakaAssets.testAssets = [
       .addFeature(shakaAssets.Feature.HIGH_DEFINITION)
       .addLicenseServer('com.microsoft.playready', 'https://content.uplynk.com/pr')
       .addLicenseServer('com.widevine.alpha', 'https://content.uplynk.com/wv')
+      .setPersistentStateRequired('com.microsoft.playready', true)
       .setRequestFilter(shakaAssets.UplynkRequestFilter)
       .setResponseFilter(shakaAssets.UplynkResponseFilter),
   new ShakaDemoAssetInfo(
