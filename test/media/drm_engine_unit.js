@@ -596,7 +596,7 @@ describe('DrmEngine', () => {
           })]);
     });
 
-    it('selects the correct configuration for PlayReady with robustness / persistentState', async () => {
+    it('selects the correct configuration for PlayReady', async () => {
       // Leave only one drmInfo
       manifest = shaka.test.ManifestGenerator.generate((manifest) => {
         manifest.addVariant(0, (variant) => {
@@ -614,12 +614,16 @@ describe('DrmEngine', () => {
       // Add manifest-supplied license servers for both.
       tweakDrmInfos((drmInfos) => {
         for (const drmInfo of drmInfos) {
-            drmInfo.licenseServerUri = 'https://com.microsoft.playready/license';
+          drmInfo.licenseServerUri = 'https://com.microsoft.playready/license';
         }
       });
 
-      setRequestMediaKeySystemAccessSpy(['com.microsoft.playready.recommendation']);
-      config.servers = {'com.microsoft.playready': 'https://com.microsoft.playready/license'};
+      setRequestMediaKeySystemAccessSpy([
+        'com.microsoft.playready.recommendation',
+      ]);
+      config.servers = {
+        'com.microsoft.playready': 'https://com.microsoft.playready/license',
+      };
       config.advanced['com.microsoft.playready'] = {
         audioRobustness: 'good',
         videoRobustness: 'really_really_ridiculously_good',
@@ -637,15 +641,18 @@ describe('DrmEngine', () => {
       expect(drmEngine.initialized()).toBe(true);
       expect(requestMediaKeySystemAccessSpy).toHaveBeenCalledTimes(1);
       expect(requestMediaKeySystemAccessSpy)
-          .toHaveBeenCalledWith('com.microsoft.playready.recommendation', [jasmine.objectContaining({
-            videoCapabilities: [jasmine.objectContaining({
-              robustness: 'good',
-            })],
-            videoCapabilities: [jasmine.objectContaining({
-              robustness: 'really_really_ridiculously_good',
-            })],
-            persistentState: 'required',
-          })]);
+          .toHaveBeenCalledWith(
+              'com.microsoft.playready.recommendation',
+              [jasmine.objectContaining({
+                audioCapabilities: [jasmine.objectContaining({
+                  robustness: 'good',
+                })],
+                videoCapabilities: [jasmine.objectContaining({
+                  robustness: 'really_really_ridiculously_good',
+                })],
+                persistentState: 'required',
+              })]
+          );
     });
 
     it('sets unique initDataTypes if specified from the initData', async () => {
@@ -660,7 +667,7 @@ describe('DrmEngine', () => {
 
       const variants = manifest.variants;
 
-      await drmEngine.initForPlayback(variants, manifest.offlineSessionIds)
+      await drmEngine.initForPlayback(variants, manifest.offlineSessionIds);
 
       expect(drmEngine.initialized()).toBe(true);
       expect(requestMediaKeySystemAccessSpy).toHaveBeenCalledTimes(1);
@@ -668,7 +675,7 @@ describe('DrmEngine', () => {
           .toHaveBeenCalledWith('drm.abc', [jasmine.objectContaining({
             initDataTypes: ['cenc'],
           })]);
-    })
+    });
 
     it('fails if license server is not configured', async () => {
       setRequestMediaKeySystemAccessSpy(['drm.abc']);
@@ -796,7 +803,9 @@ describe('DrmEngine', () => {
       await initAndAttach();
 
       // expect(mockMediaKeys.createSession).toHaveBeenCalledTimes(1);
-      expect(mockMediaKeys.createSession).toHaveBeenCalledWith('persistent-license');
+      expect(mockMediaKeys.createSession).toHaveBeenCalledWith(
+          'persistent-license'
+      );
       expect(session1.generateRequest).toHaveBeenCalledWith('cenc', initData);
     });
 
