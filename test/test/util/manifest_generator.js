@@ -365,6 +365,8 @@ shaka.test.ManifestGenerator.DrmInfo = class {
     this.distinctiveIdentifierRequired = false;
     /** @type {boolean} */
     this.persistentStateRequired = false;
+    /** @type {boolean} */
+    this.persistentStateNotAllowed = false;
     /** @type {string} */
     this.audioRobustness = '';
     /** @type {string} */

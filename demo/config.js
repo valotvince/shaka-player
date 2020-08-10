@@ -113,6 +113,7 @@ shakaDemo.Config = class {
     return {
       distinctiveIdentifierRequired: false,
       persistentStateRequired: false,
+      persistentStateNotAllowed: false,
       videoRobustness: '',
       audioRobustness: '',
       serverCertificate: new Uint8Array(0),

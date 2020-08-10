@@ -345,6 +345,7 @@ const ShakaDemoAssetInfo = class {
           config.drm.advanced[key] = {
             distinctiveIdentifierRequired: false,
             persistentStateRequired: false,
+            persistentStateNotAllowed: false,
             videoRobustness: '',
             audioRobustness: '',
             serverCertificate: new Uint8Array(0),

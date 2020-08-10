@@ -487,6 +487,7 @@ shaka.extern.EmsgInfo;
  * @typedef {{
  *   distinctiveIdentifierRequired: boolean,
  *   persistentStateRequired: boolean,
+ *   persistentStateNotAllowed: boolean,
  *   videoRobustness: string,
  *   audioRobustness: string,
  *   serverCertificate: Uint8Array,
@@ -498,6 +499,7 @@ shaka.extern.EmsgInfo;
  *   True if the application requires the key system to support distinctive
  *   identifiers.
  * @property {boolean} persistentStateRequired
+ * @property {boolean} persistentStateNotAllowed
  *   <i>Defaults to false.</i> <br>
  *   True if the application requires the key system to support persistent
  *   state, e.g., for persistent license storage.

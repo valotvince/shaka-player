@@ -104,6 +104,7 @@ shaka.extern.InitDataOverride;
  *   licenseServerUri: string,
  *   distinctiveIdentifierRequired: boolean,
  *   persistentStateRequired: boolean,
+ *   persistentStateNotAllowed: boolean,
  *   audioRobustness: string,
  *   videoRobustness: string,
  *   serverCertificate: Uint8Array,
@@ -125,6 +126,7 @@ shaka.extern.InitDataOverride;
  *   True if the application requires the key system to support distinctive
  *   identifiers.
  * @property {boolean} persistentStateRequired
+ * @property {boolean} persistentStateNotAllowed
  *   <i>Defaults to false.  Can be filled in by advanced DRM config.</i> <br>
  *   True if the application requires the key system to support persistent
  *   state, e.g., for persistent license storage.
