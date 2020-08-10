@@ -413,6 +413,7 @@ describe('DrmEngine', () => {
             distinctiveIdentifier: 'optional',
             persistentState: 'optional',
             sessionTypes: ['temporary'],
+            initDataTypes: ['cenc'],
           })]);
       expect(requestMediaKeySystemAccessSpy)
           .toHaveBeenCalledWith('drm.def', [jasmine.objectContaining({
@@ -423,6 +424,7 @@ describe('DrmEngine', () => {
             distinctiveIdentifier: 'optional',
             persistentState: 'optional',
             sessionTypes: ['temporary'],
+            initDataTypes: ['cenc'],
           })]);
     });
 
@@ -441,6 +443,7 @@ describe('DrmEngine', () => {
           distinctiveIdentifier: 'optional',
           persistentState: 'required',
           sessionTypes: ['persistent-license'],
+          initDataTypes: ['cenc'],
         }),
       ]);
       expect(requestMediaKeySystemAccessSpy).toHaveBeenCalledWith('drm.def', [
@@ -448,6 +451,7 @@ describe('DrmEngine', () => {
           distinctiveIdentifier: 'optional',
           persistentState: 'required',
           sessionTypes: ['persistent-license'],
+          initDataTypes: ['cenc'],
         }),
       ]);
     });
@@ -556,6 +560,7 @@ describe('DrmEngine', () => {
             })],
             distinctiveIdentifier: 'required',
             persistentState: 'required',
+            initDataTypes: ['cenc'],
           })]);
     });
 
@@ -611,6 +616,7 @@ describe('DrmEngine', () => {
             })],
             distinctiveIdentifier: 'required',
             persistentState: 'required',
+            initDataTypes: ['cenc'],
           })]);
     });
 
@@ -669,6 +675,7 @@ describe('DrmEngine', () => {
                   robustness: 'really_really_ridiculously_good',
                 })],
                 persistentState: 'required',
+                initDataTypes: ['cenc'],
               })]
           );
     });
@@ -676,8 +683,8 @@ describe('DrmEngine', () => {
     it('sets unique initDataTypes if specified from the initData', async () => {
       tweakDrmInfos((drmInfos) => {
         drmInfos[0].initData = [
-          {initDataType: 'cenc', initData: new Uint8Array(5), keyId: null},
-          {initDataType: 'cenc', initData: new Uint8Array(5), keyId: null},
+          {initDataType: 'very_nice', initData: new Uint8Array(5), keyId: null},
+          {initDataType: 'very_nice', initData: new Uint8Array(5), keyId: null},
         ];
       });
 
@@ -691,7 +698,7 @@ describe('DrmEngine', () => {
       expect(requestMediaKeySystemAccessSpy).toHaveBeenCalledTimes(1);
       expect(requestMediaKeySystemAccessSpy)
           .toHaveBeenCalledWith('drm.abc', [jasmine.objectContaining({
-            initDataTypes: ['cenc'],
+            initDataTypes: ['very_nice'],
           })]);
     });
 
