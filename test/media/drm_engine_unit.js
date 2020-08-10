@@ -1951,6 +1951,7 @@ describe('DrmEngine', () => {
         videoRobustness: 'really_really_ridiculously_good',
         serverCertificate: undefined,
         keyIds: new Set(['deadbeefdeadbeefdeadbeefdeadbeef']),
+        initData: [],
       });
     });
   });  // describe('getDrmInfo')
