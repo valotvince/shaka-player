@@ -1714,6 +1714,7 @@ shakaDemo.Main = class {
       persistentStateRequired: false,
       videoRobustness: '',
       audioRobustness: '',
+      sessionType: '',
       serverCertificate: new Uint8Array(0),
       individualizationServer: '',
     };
