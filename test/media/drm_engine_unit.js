@@ -16,6 +16,7 @@ goog.require('shaka.util.AbortableOperation');
 goog.require('shaka.util.BufferUtils');
 goog.require('shaka.util.Error');
 goog.require('shaka.util.PlayerConfiguration');
+goog.require('shaka.util.Platform');
 goog.require('shaka.util.PublicPromise');
 goog.require('shaka.util.StringUtils');
 goog.require('shaka.util.Uint8ArrayUtils');
@@ -25,6 +26,7 @@ describe('DrmEngine', () => {
 
   const originalRequestMediaKeySystemAccess =
       navigator.requestMediaKeySystemAccess;
+  const originalPlatformIsEdge = shaka.util.Platform.isEdge;
   const originalLogError = shaka.log.error;
   const originalBatchTime = shaka.media.DrmEngine.KEY_STATUS_BATCH_TIME;
 
@@ -148,6 +150,7 @@ describe('DrmEngine', () => {
     navigator.requestMediaKeySystemAccess =
         originalRequestMediaKeySystemAccess;
     shaka.log.error = originalLogError;
+    shaka.util.Platform.isEdge = originalPlatformIsEdge;
   });
 
   describe('supportsVariants', () => {
@@ -536,7 +539,7 @@ describe('DrmEngine', () => {
         audioRobustness: 'good',
         videoRobustness: 'really_really_ridiculously_good',
         serverCertificate: null,
-        sessionType: '',
+        sessionType: 'persistent-license',
         individualizationServer: '',
         distinctiveIdentifierRequired: true,
         persistentStateRequired: true,
@@ -560,6 +563,7 @@ describe('DrmEngine', () => {
             })],
             distinctiveIdentifier: 'required',
             persistentState: 'required',
+            sessionTypes: ['persistent-license'],
             initDataTypes: ['cenc'],
           })]);
     });
@@ -621,7 +625,9 @@ describe('DrmEngine', () => {
           })]);
     });
 
-    it('selects the correct configuration for PlayReady', async () => {
+    it('should silently try PlayReady recommendation keySytem', async () => {
+      shaka.util.Platform.isEdge = () => true;
+
       // Leave only one drmInfo
       manifest = shaka.test.ManifestGenerator.generate((manifest) => {
         manifest.addVariant(0, (variant) => {
@@ -637,7 +643,7 @@ describe('DrmEngine', () => {
       });
 
       setRequestMediaKeySystemAccessSpy([
-        'com.microsoft.playready.recommendation',
+        'com.microsoft.playready',
       ]);
       config.servers = {
         'com.microsoft.playready': 'https://com.microsoft.playready/license',
@@ -657,21 +663,28 @@ describe('DrmEngine', () => {
       const variants = manifest.variants;
       await drmEngine.initForPlayback(variants, manifest.offlineSessionIds);
 
+      const expectedConfig = jasmine.objectContaining({
+        audioCapabilities: [jasmine.objectContaining({
+          robustness: 'good',
+        })],
+        videoCapabilities: [jasmine.objectContaining({
+          robustness: 'really_really_ridiculously_good',
+        })],
+        persistentState: 'required',
+        initDataTypes: ['cenc'],
+      });
+
       expect(drmEngine.initialized()).toBe(true);
-      expect(requestMediaKeySystemAccessSpy).toHaveBeenCalledTimes(1);
+      expect(requestMediaKeySystemAccessSpy).toHaveBeenCalledTimes(2);
       expect(requestMediaKeySystemAccessSpy)
           .toHaveBeenCalledWith(
               'com.microsoft.playready.recommendation',
-              [jasmine.objectContaining({
-                audioCapabilities: [jasmine.objectContaining({
-                  robustness: 'good',
-                })],
-                videoCapabilities: [jasmine.objectContaining({
-                  robustness: 'really_really_ridiculously_good',
-                })],
-                persistentState: 'required',
-                initDataTypes: ['cenc'],
-              })]
+              [expectedConfig]
+          );
+      expect(requestMediaKeySystemAccessSpy)
+          .toHaveBeenCalledWith(
+              'com.microsoft.playready',
+              [expectedConfig]
           );
     });
 
@@ -1921,6 +1934,7 @@ describe('DrmEngine', () => {
         audioRobustness: 'good',
         videoRobustness: 'really_really_ridiculously_good',
         serverCertificate: undefined,
+        sessionTypes: ['temporary'],
         initData: [],
         keyIds: new Set(['deadbeefdeadbeefdeadbeefdeadbeef']),
       });
